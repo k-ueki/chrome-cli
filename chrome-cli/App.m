@@ -151,6 +151,37 @@ static NSString * const kJsPrintSource = @"(function() { return document.getElem
     }
 }
 
+- (void)listTabsWithLinks:(Arguments *)args {
+	if (self->outputFormat == kOutputFormatJSON) {
+		NSMutableArray *tabInfos = [[NSMutableArray alloc] init];
+		for(chromeWindow *window in self.chrome.windows) {
+			for (chromeTab *tab in window.tabs) {
+				NSDictionary *tabInfo = @{
+					@"windowId": @(window.id),
+					@"windowName": window.name,
+							@"id": @(tab.id),
+						@"title": tab.title,
+						@"url": tab.URL,
+				};
+				[tabInfos addObject:tabInfo];
+			}
+		}
+		NSDictionary *output = @{
+			@"tabs": tabInfos,
+		};
+		[self printJson:output];
+	} else {
+		for (chromeWindow *window in self.chrome.windows) {
+			for (chromeTab *tab in window.tabs) {
+				if (self.chrome.windows.count > 1) {
+					printf("[%ld:%ld] %-100s:%-s\n", (long)window.id, (long)tab.id, tab.title.UTF8String, tab.URL.UTF8String);
+				} else {
+					printf("[%ld] %-100s:%-s\n", (long)tab.id, tab.title.UTF8String, tab.URL.UTF8String);
+				}
+			}
+		}
+	}
+}
 
 - (void)listTabsInWindow:(Arguments *)args {
     NSInteger windowId = [args asInteger:@"id"];

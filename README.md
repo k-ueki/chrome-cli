@@ -123,3 +123,9 @@ More details [here](https://www.chromium.org/developers/applescript). Thanks to 
     Google turns on "Download Gmail Archive" feature
     Learning to Code vs Learning Computer Science
     Show HN: Crushify.org
+
+
+## How to create new command
+1. add command implementation to main.m, App.m
+2. `gcc -c main.m`
+3. `gcc -o main main.o App.m Argonaut.m Handler.m Arguments.m -framework Foundation -framework ScriptingBridge`
